@@ -2,29 +2,36 @@
 
 console.log("app is running");
 
-var userName = "Michal";
-var userAge = 48;
-var userLocation = "Polska";
+var user = {
+  name: "Pawel",
+  age: 40,
+  location: "Poznan"
+};
 
+function getLocation(location) {
+  if (location) {
+    return React.createElement(
+      "p",
+      null,
+      "location: ",
+      location
+    );
+  }
+}
 var template2 = React.createElement(
   "div",
   null,
   React.createElement(
     "h1",
     null,
-    (userName + " Chociszewski").toUpperCase()
+    user.name
   ),
   React.createElement(
     "p",
     null,
-    "Age: ",
-    userAge
+    user.age
   ),
-  React.createElement(
-    "p",
-    null,
-    userLocation
-  )
+  getLocation(user.location)
 );
 
 var appRoot = document.getElementById("app");
