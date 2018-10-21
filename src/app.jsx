@@ -41,7 +41,11 @@ const render = () => {
       </button>
       <button onClick={removeAll}>remove All options</button>
 
-      <ol>{app.options.map(option => <li key={option}>{option}</li>)}</ol>
+      <ol>
+        {app.options.map(option => (
+          <li key={option}>{option}</li>
+        ))}
+      </ol>
       <form onSubmit={onFormSubmit}>
         <input type="text" name="option" />
         <button>add option</button>
