@@ -25,10 +25,18 @@ class Student extends Person {
   }
 }
 
+class TestMethod extends Person {
+  constructor() {
+    super();
+  }
+}
+
 const pawel = new Person("tomek", 25);
 const anonymous = new Person();
 const me = new Student("Pawel", 29);
+const test = new TestMethod("test", 1);
 
 console.log(pawel.getGretting());
 console.log(anonymous.getGretting());
 console.log(me.getGretting());
+console.log(test);
