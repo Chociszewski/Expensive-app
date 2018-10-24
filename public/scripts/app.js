@@ -14,18 +14,53 @@ var Indecision = function (_React$Component) {
   function Indecision() {
     _classCallCheck(this, Indecision);
 
-    return _possibleConstructorReturn(this, (Indecision.__proto__ || Object.getPrototypeOf(Indecision)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Indecision.__proto__ || Object.getPrototypeOf(Indecision)).call(this));
+
+    _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
+    _this.handleAddOptions = _this.handleAddOptions.bind(_this);
+    _this.handlePick = _this.handlePick.bind(_this);
+    _this.state = {
+      options: ["one thing", "two", "three"]
+    };
+    return _this;
   }
 
   _createClass(Indecision, [{
+    key: "handleDeleteOptions",
+    value: function handleDeleteOptions() {
+      this.setState(function () {
+        return { options: [] };
+      });
+    }
+  }, {
+    key: "handleAddOptions",
+    value: function handleAddOptions() {
+      this.setState(function (newOption) {});
+    }
+  }, {
+    key: "handlePick",
+    value: function handlePick() {
+      var random = Math.random() * this.state.options.length;
+      var choice = Math.floor(random);
+      alert(this.state.options[choice]);
+    }
+  }, {
     key: "render",
     value: function render() {
+      var title = "Indecision";
+      var subtitle = "Put your life in the hands";
       return React.createElement(
         "div",
         null,
-        React.createElement(Header, null),
-        React.createElement(Action, null),
-        React.createElement(Options, null),
+        React.createElement(Header, { title: title, subtitle: subtitle }),
+        React.createElement(Action, {
+          hasOptions: this.state.options.length > 0,
+          handlePick: this.handlePick
+        }),
+        React.createElement(Options, {
+          options: this.state.options,
+          handleDeleteOptions: this.handleDeleteOptions
+        }),
         React.createElement(AddOption, null)
       );
     }
@@ -52,12 +87,12 @@ var Header = function (_React$Component2) {
         React.createElement(
           "h1",
           null,
-          "Indecision"
+          this.props.title
         ),
         React.createElement(
           "p",
           null,
-          "put your life in the hands"
+          this.props.subtitle
         )
       );
     }
@@ -83,7 +118,10 @@ var Action = function (_React$Component3) {
         null,
         React.createElement(
           "button",
-          null,
+          {
+            onClick: this.props.handlePick,
+            disabled: !this.props.hasOptions
+          },
           "What should I do"
         )
       );
@@ -108,7 +146,14 @@ var Options = function (_React$Component4) {
       return React.createElement(
         "div",
         null,
-        React.createElement(Option, null)
+        React.createElement(
+          "button",
+          { onClick: this.props.handleDeleteOptions },
+          "remove all"
+        ),
+        this.props.options.map(function (option) {
+          return React.createElement(Option, { option: option, key: option });
+        })
       );
     }
   }]);
@@ -134,7 +179,7 @@ var Option = function (_React$Component5) {
         React.createElement(
           "p",
           null,
-          "option 1"
+          this.props.option
         )
       );
     }
@@ -153,12 +198,28 @@ var AddOption = function (_React$Component6) {
   }
 
   _createClass(AddOption, [{
+    key: "handleAddOption",
+    value: function handleAddOption(e) {
+      e.preventDefault();
+      var option = e.target.elements.option.value.trim();
+      if (option) alert(option);
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         null,
-        "add options"
+        React.createElement(
+          "form",
+          { onSubmit: this.handleAddOption },
+          React.createElement("input", { type: "text", name: "option" }),
+          React.createElement(
+            "button",
+            null,
+            "add option "
+          )
+        )
       );
     }
   }]);
