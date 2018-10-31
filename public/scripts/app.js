@@ -11,14 +11,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Indecision = function (_React$Component) {
   _inherits(Indecision, _React$Component);
 
-  function Indecision() {
+  function Indecision(props) {
     _classCallCheck(this, Indecision);
 
-    var _this = _possibleConstructorReturn(this, (Indecision.__proto__ || Object.getPrototypeOf(Indecision)).call(this));
+    var _this = _possibleConstructorReturn(this, (Indecision.__proto__ || Object.getPrototypeOf(Indecision)).call(this, props));
 
     _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
     _this.handleAddOption = _this.handleAddOption.bind(_this);
     _this.handlePick = _this.handlePick.bind(_this);
+    _this.handleDeleteOption = _this.handleDeleteOption.bind(_this);
     _this.state = {
       options: []
     };
@@ -26,10 +27,51 @@ var Indecision = function (_React$Component) {
   }
 
   _createClass(Indecision, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      try {
+        var json = localStorage.getItem("options");
+        var options = JSON.parse(json);
+        if (options) {
+          this.setState(function () {
+            return { options: options };
+          });
+        }
+      } catch (e) {
+        // do nothing at all
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevState.options.length !== this.state.options.length) {
+        var json = JSON.stringify(this.state.options);
+        localStorage.setItem("options", json);
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      console.log("componentWillUnmount");
+    }
+  }, {
     key: "handleDeleteOptions",
     value: function handleDeleteOptions() {
       this.setState(function () {
-        return { options: [] };
+        return {
+          options: []
+        };
+      });
+    }
+  }, {
+    key: "handleDeleteOption",
+    value: function handleDeleteOption(optionToRemove) {
+      this.setState(function (prevState) {
+        return {
+          options: prevState.options.filter(function (option) {
+            return optionToRemove !== option;
+          })
+        };
       });
     }
   }, {
@@ -68,7 +110,8 @@ var Indecision = function (_React$Component) {
         }),
         React.createElement(Options, {
           options: this.state.options,
-          handleDeleteOptions: this.handleDeleteOptions
+          handleDeleteOptions: this.handleDeleteOptions,
+          handleDeleteOption: this.handleDeleteOption
         }),
         React.createElement(AddOption, { handleAddOption: this.handleAddOption })
       );
@@ -120,8 +163,17 @@ var Options = function Options(props) {
       { onClick: props.handleDeleteOptions },
       "remove all"
     ),
+    props.options.length === 0 && React.createElement(
+      "p",
+      null,
+      "Please add an optin to get started"
+    ),
     props.options.map(function (option) {
-      return React.createElement(Option, { option: option, key: option });
+      return React.createElement(Option, {
+        option: option,
+        key: option,
+        handleDeleteOption: props.handleDeleteOption
+      });
     })
   );
 };
@@ -130,10 +182,13 @@ var Option = function Option(props) {
   return React.createElement(
     "div",
     null,
+    props.option,
     React.createElement(
-      "p",
-      null,
-      props.option
+      "button",
+      { onClick: function onClick() {
+          return props.handleDeleteOption(props.option);
+        } },
+      "remove"
     )
   );
 };
@@ -157,7 +212,6 @@ var AddOption = function (_React$Component2) {
     key: "handleAddOption",
     value: function handleAddOption(e) {
       e.preventDefault();
-      console.log(e);
       var option = e.target.elements.option.value.trim();
       var error = this.props.handleAddOption(option);
       this.setState(function () {
@@ -165,6 +219,10 @@ var AddOption = function (_React$Component2) {
           error: error
         };
       });
+
+      if (!error) {
+        e.target.elements.option.value = "";
+      }
     }
   }, {
     key: "render",
