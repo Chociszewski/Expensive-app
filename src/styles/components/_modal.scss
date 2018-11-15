@@ -1,6 +1,25 @@
 
-.ReactModalPortal .ReactModal__
-.modal {
-    background: $light-blue;
+.ReactModalPortal .ReactModal__Overlay {
+    align-items: center;
     display: flex;
+    justify-content: center;
+}
+.modal {
+    color: white;
+    background: $light-blue;
+    max-width: 30rem;
+    outline: none;
+    padding: $l-size;
+    text-align: center;
+}
+
+.modal__title {
+    margin: 0 0 $l-size 0;
+}
+
+.modal__body {
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0 0 $l-size 0;
+    word-break: break-all;
 }
