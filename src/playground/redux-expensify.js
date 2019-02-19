@@ -18,13 +18,42 @@ const addExpense = ({
   }
 });
 
+//remove_EXPENSE
+const removeExpense = ({ id }) => ({
+  type: "REMOVE_EXPENSE",
+  id
+});
+
+//EDIT_EXPENSE
+const editExpense = (id, updates) => ({
+  type: "EDIT_EXPENSE",
+  id,
+  updates
+});
+
 //Expenses Reducer
 
 const expensesReducerDefaultState = [];
 const expensesReducer = (state = expensesReducerDefaultState, action) => {
   switch (action.type) {
     case "ADD_EXPENSE":
-      return state.concat(action.expense);
+      //return state.concat(action.expense);
+      return [...state, action.expense];
+    case "REMOVE_EXPENSE":
+      return state.filter(({ id }) => id !== action.id); //zwraca tylko pasujace expeses do ID
+    // pojedynczy wyrazenie be {}
+    //                     ^^ destructing 'id'
+    case "EDIT_EXPENSE":
+      return state.map(expense => {
+        if (expense.id === action.id) {
+          return {
+            ...expense,
+            ...action.updates
+          };
+        } else {
+          return expense;
+        }
+      });
     default:
       return state;
   }
@@ -60,7 +89,15 @@ store.subscribe(() => {
   console.log(store.getState());
 });
 
-store.dispatch(addExpense({ description: "Rent", amount: 100 }));
+const expenseOne = store.dispatch(
+  addExpense({ description: "Rent", amount: 100 })
+);
+const expenseTwo = store.dispatch(
+  addExpense({ description: "Coffe", amount: 300 })
+);
+
+store.dispatch(removeExpense({ id: expenseOne.expense.id }));
+store.dispatch(editExpense(expenseTwo.expense.id, { amount: 500 }));
 
 const demoState = {
   expenses: [
